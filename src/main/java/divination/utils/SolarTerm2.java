@@ -195,10 +195,11 @@ public class SolarTerm2 {
     // 式中shiqu是时区,北京的起算点是-8小时,shiqu取8
     public double Dint_dec(double jd, int shiqu, boolean dec) {
         double u = jd + 0.5 - this.deltatT2(jd) + shiqu / 24.0;
-        if (dec)
+        if (dec) {
             return Math.floor(u); // 返回整数部分
-        else
+        } else {
             return u - Math.floor(u); // 返回小数部分
+        }
     }
 
     // 计算两个日期的相差的天数,输入字串格式日期,如:"20080101"
@@ -244,13 +245,13 @@ public class SolarTerm2 {
 
     // 补岁差
     public static void addPrece(double jd, double[] zb) {
-     int i;
-     double t = 1, v = 0, t1 = jd / 365250;
-     for (i = 1; i < 8; i++) {
-      t *= t1;
-      v += preceB[i] * t;
-     }
-     zb[0] = rad2mrad(zb[0] + (v + 2.9965 * t1) / rad);
+        int i;
+        double t = 1, v = 0, t1 = jd / 365250;
+        for (i = 1; i < 8; i++) {
+            t *= t1;
+            v += preceB[i] * t;
+        }
+        zb[0] = rad2mrad(zb[0] + (v + 2.9965 * t1) / rad);
     }
 
     // ===============光行差==================
@@ -451,24 +452,22 @@ public class SolarTerm2 {
 
     // 计算E10,E11,E20等,即:某一组周期项或泊松项算出,计算前先设置EnnT时间
     public double Enn(double[] F) {
-     double v = 0;
-     for (int i = 0; i < F.length; i += 3)
-      v += F[i] * Math.cos(F[i + 1] + EnnT * F[i + 2]);
-     return v;
+        double v = 0;
+        for (int i = 0; i < F.length; i += 3)
+            v += F[i] * Math.cos(F[i + 1] + EnnT * F[i + 2]);
+        return v;
     }
     
     // 返回地球位置,日心Date黄道分点坐标
     public double[] earCal(double jd) {
-     EnnT = jd / 365250;
-     double llr[] = new double[3];
-     double t1 = EnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1, t5 = t4
-       * t1;
-     llr[0] = Enn(E10) + Enn(E11) * t1 + Enn(E12) * t2 + Enn(E13) * t3
-       + Enn(E14) * t4 + Enn(E15) * t5;
-     llr[1] = Enn(E20) + Enn(E21) * t1;
-     llr[2] = Enn(E30) + Enn(E31) * t1 + Enn(E32) * t2 + Enn(E33) * t3;
-     llr[0] = rad2mrad(llr[0]);
-     return llr;
+        EnnT = jd / 365250;
+        double llr[] = new double[3];
+        double t1 = EnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1, t5 = t4 * t1;
+        llr[0] = Enn(E10) + Enn(E11) * t1 + Enn(E12) * t2 + Enn(E13) * t3 + Enn(E14) * t4 + Enn(E15) * t5;
+        llr[1] = Enn(E20) + Enn(E21) * t1;
+        llr[2] = Enn(E30) + Enn(E31) * t1 + Enn(E32) * t2 + Enn(E33) * t3;
+        llr[0] = rad2mrad(llr[0]);
+        return llr;
     }
     
     // 传回jd时刻太阳的地心视黄经及黄纬
@@ -487,28 +486,25 @@ public class SolarTerm2 {
 
     // 计算M10,M11,M20等,计算前先设置MnnT时间
     public double Mnn(double[] F) {
-     double v = 0, t1 = MnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1;
-     for (int i = 0; i < F.length; i += 6)
-      v += F[i]
-        * Math.sin(F[i + 1] + t1 * F[i + 2] + t2 * F[i + 3] + t3
-          * F[i + 4] + t4 * F[i + 5]);
-     return v;
+        double v = 0, t1 = MnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1;
+        for (int i = 0; i < F.length; i += 6)
+            v += F[i] * Math.sin(F[i + 1] + t1 * F[i + 2] + t2 * F[i + 3] + t3 * F[i + 4] + t4 * F[i + 5]);
+        return v;
     }
     
     
     // 返回月球位置,返回地心Date黄道坐标
     public double[] moonCal(double jd) {
-     MnnT = jd / 36525;
-     double t1 = MnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1;
-     double[] llr = new double[3];
-     llr[0] = (Mnn(M10) + Mnn(M11) * t1 + Mnn(M12) * t2) / rad;
-     llr[1] = (Mnn(M20) + Mnn(M21) * t1) / rad;
-     llr[2] = (Mnn(M30) + Mnn(M31) * t1) * 0.999999949827;
-     llr[0] = llr[0] + M1n[0] + M1n[1] * t1 + M1n[2] * t2 + M1n[3] * t3
-       + M1n[4] * t4;
-     llr[0] = rad2mrad(llr[0]); // 地心Date黄道原点坐标(不含岁差)
-     addPrece(jd, llr); // 补岁差
-     return llr;
+        MnnT = jd / 36525;
+        double t1 = MnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1;
+        double[] llr = new double[3];
+        llr[0] = (Mnn(M10) + Mnn(M11) * t1 + Mnn(M12) * t2) / rad;
+        llr[1] = (Mnn(M20) + Mnn(M21) * t1) / rad;
+        llr[2] = (Mnn(M30) + Mnn(M31) * t1) * 0.999999949827;
+        llr[0] = llr[0] + M1n[0] + M1n[1] * t1 + M1n[2] * t2 + M1n[3] * t3 + M1n[4] * t4;
+        llr[0] = rad2mrad(llr[0]); // 地心Date黄道原点坐标(不含岁差)
+        addPrece(jd, llr); // 补岁差
+        return llr;
     }
     
     // 传回月球的地心视黄经及视黄纬
@@ -717,6 +713,8 @@ public class SolarTerm2 {
      st.paiYue(2007);
      st.JQtest(2019);
      st.paiYue(2019);
+     st.JQtest(2018);
+     st.paiYue(2018);
     }
 }
 

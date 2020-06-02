@@ -351,8 +351,7 @@ public class Lauar {
      * @return 
      */  
     public String getLunarDay() {  
-        return (result[3] == 1 ? "闰" : "") + monthNong[result[1]] + "月"  
-                + chineseDay(result[2]);  
+        return (result[3] == 1 ? "闰" : "") + monthNong[result[1]] + "月" + chineseDay(result[2]);  
     }  
       
     public String getLunarMonth(){  
@@ -371,8 +370,7 @@ public class Lauar {
     public String getLunarTime() {  
         int hour = calendar.get(Calendar.HOUR_OF_DAY);  
         int timeOffset = (result[6] % 10) * 24 + hour;  
-        return Gan[((timeOffset + 1) / 2) % 10] + Zhi[((hour + 1) / 2) % 12]  
-                + "时";  
+        return Gan[((timeOffset + 1) / 2) % 10] + Zhi[((hour + 1) / 2) % 12] + "时";  
     }  
   
     /** 
@@ -403,8 +401,8 @@ public class Lauar {
         long temp = cal.getTime().getTime();  
         cal.setTimeInMillis((long) ((31556925974.7 * (y - 1900) + STermInfo[n] * 60000L) + temp));  
         return cal.get(Calendar.DAY_OF_MONTH);  
-    }  
-  
+    }
+
     /** 
      * 农历节日 
      *  
@@ -416,10 +414,10 @@ public class Lauar {
             temp = (result[1] << 8) + 30;  
         }else{  
             temp = (result[1] << 8) + result[2];  
-        }  
+        } 
         return lunarHolidayMap.get(temp);  
-    }  
-      
+    }
+
     /** 
      * 公历节日 
      * @return 
@@ -445,7 +443,9 @@ public class Lauar {
     public Calendar getCalendar() {  
         return calendar;  
     }  
-  
+    public int[] get() {
+        return result;
+    }
     /** 
      * 后一天 
      */  
