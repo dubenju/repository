@@ -94,19 +94,19 @@ public class Program {
      */
     public void set命宫() {
         this.命宫地支 = 0;
-        System.out.println(地支.class.getEnumConstants()[this.命宫地支] + "," + this.农历.get()[1]);
+//        System.out.println(地支.class.getEnumConstants()[this.命宫地支] + "," + this.农历.get()[1]);
         for (int i = 0; i < this.农历.get()[1] - 1; i ++) {
             this.命宫地支 --;
             if (this.命宫地支 < 0) { this.命宫地支 += 12;}
-            System.out.println("A" + 地支.class.getEnumConstants()[this.命宫地支]);
+//            System.out.println("A" + 地支.class.getEnumConstants()[this.命宫地支]);
         }
         int max = this.地支[3] <= 3 ? 3 - this.地支[3] : 15 - this.地支[3];
-        System.out.println("max=" + max);
+//        System.out.println("max=" + max);
         for (int i = 0; i < max; i ++) {
 //            if (this.命宫地支 == 3) break; 
             this.命宫地支 ++;
             if (this.命宫地支 >= 12) { this.命宫地支 -= 12;}
-            System.out.println("B" + 地支.class.getEnumConstants()[this.命宫地支]);
+//            System.out.println("B" + 地支.class.getEnumConstants()[this.命宫地支]);
         }
         this.命宫天干 = ((((this.命宫地支 - 2) < 0) ? (this.命宫地支 + 10) : (this.命宫地支 - 2)) + FourPillars.getMonth天干(this.天干[0])) % 10;
     }
@@ -120,7 +120,7 @@ public class Program {
             // 逆数
             duration = Duration.between(this.前一个节气, this.日期);
         }
-        System.out.println(duration.toHours());
+//        System.out.println(duration.toHours());
         double days = duration.toHours() /24.0D;
         int 大运 = (int) (days / 3);
         if ((days - 大运 * 3) >= 2 ) {
@@ -175,9 +175,20 @@ public class Program {
     }
 
     /**
-     * 甲乙生人子午中，丙丁鸡兔定亨通；戊己两干临四季，庚辛寅亥禄丰隆；壬癸巳申偏喜美，值此应当福气钟；更须贵格来相扶，候封万户到三公
+     * 甲乙生人子午中，
+     * 丙丁鸡兔定亨通；
+     * 戊己两干临四季，
+     * 庚辛寅亥禄丰隆；
+     * 壬癸巳申偏喜美，
+     * 值此应当福气钟；
+     * 更须贵格来相扶，
+     * 候封万户到三公
      * 以年干或日干为准，四柱地支见者为是。
-     * 年干或日干为甲乙，四柱地支见子或午；年干或日干为丙丁，四柱地支见卯或酉；年干或日干为戊己，四柱地支中见辰、戌、丑、未；年干或日干为庚辛，四柱地支见寅或亥；年干或日干为壬癸，四柱地支见巳或申均为太极贵人。
+     * 年干或日干为甲乙，四柱地支见子或午；
+     * 年干或日干为丙丁，四柱地支见卯或酉；
+     * 年干或日干为戊己，四柱地支中见辰、戌、丑、未；
+     * 年干或日干为庚辛，四柱地支见寅或亥；
+     * 年干或日干为壬癸，四柱地支见巳或申均为太极贵人。
      * @return
      */
     private boolean is太极贵人() {
@@ -196,7 +207,77 @@ public class Program {
                 result = true;
             }
         }
+        if (this.天干[0] == 4 || this.天干[3] == 4 ||
+            this.天干[0] == 5 || this.天干[3] == 5) {
+            if (this.地支[0] == 1 || this.地支[1] == 1 || this.地支[2] == 1 || this.地支[3] == 1 ||
+                this.地支[0] == 4 || this.地支[1] == 4 || this.地支[2] == 4 || this.地支[3] == 4 ||
+                this.地支[0] == 7 || this.地支[1] == 7 || this.地支[2] == 7 || this.地支[3] == 7 ||
+                this.地支[0] ==10 || this.地支[1] ==10 || this.地支[2] ==10 || this.地支[3] ==10) {
+                result = true;
+            }
+        }
+        if (this.天干[0] == 6 || this.天干[3] == 6 ||
+            this.天干[0] == 7 || this.天干[3] == 7) {
+            if (this.地支[0] == 2 || this.地支[1] == 2 || this.地支[2] == 2 || this.地支[3] == 2 ||
+                this.地支[0] ==11 || this.地支[1] ==11 || this.地支[2] ==11 || this.地支[3] ==11) {
+                result = true;
+            }
+        }
+        if (this.天干[0] == 8 || this.天干[3] == 8 ||
+            this.天干[0] == 9 || this.天干[3] == 9) {
+            if (this.地支[0] == 5 || this.地支[1] == 5 || this.地支[2] == 5 || this.地支[3] == 5 ||
+                this.地支[0] == 8 || this.地支[1] == 8 || this.地支[2] == 8 || this.地支[3] == 8) {
+                result = true;
+            }
+        }
         return result;
+    }
+    private boolean is天德贵人() {
+        boolean result = false;
+        int a = Data.get天德贵人1(this.农历.get()[1]);
+        if (a > 0) {
+            if (this.天干[0] == a || this.天干[1] == a || this.天干[2] == a || this.天干[3] == a) {
+                result = true;
+            }
+        }
+        int b = Data.get天德贵人2(this.农历.get()[1]);
+        if (b > 0) {
+            if (this.地支[0] == b || this.地支[1] == b || this.地支[2] == b || this.地支[3] == b) {
+                result = true;
+            }
+        }
+        return result;
+    }
+    private boolean is月德贵人() {
+        boolean result = false;
+        int a = Data.get月德贵人1(this.地支[1]);
+        if (a > 0) {
+            if (this.天干[0] == a || this.天干[1] == a || this.天干[2] == a || this.天干[3] == a) {
+                result = true;
+            }
+        }
+        return result;
+    }
+    /**
+     * 天上三奇：甲戊庚。甲日戊月庚年。
+     * 人中三奇：壬癸辛。壬日癸月辛年。
+     * 地下三奇：乙丙丁。乙日丙月丁年。
+     * @return
+     */
+    private int is三奇贵人() {
+        if ((this.天干[0] == 0 && this.天干[1] == 4 && this.天干[2] == 6 ) ||
+            (this.天干[1] == 0 && this.天干[2] == 4 && this.天干[3] == 6 )) {
+            return 3;
+        }
+        if ((this.天干[0] == 7 && this.天干[1] == 8 && this.天干[2] == 9 ) ||
+            (this.天干[1] == 7 && this.天干[2] == 8 && this.天干[3] == 9 )) {
+            return 1;
+        }
+        if ((this.天干[0] == 1 && this.天干[1] == 2 && this.天干[2] == 3 ) ||
+            (this.天干[1] == 1 && this.天干[2] == 2 && this.天干[3] == 3 )) {
+            return 2;
+        }
+        return -1;
     }
     public String toString() {
         StringBuilder buf = new StringBuilder();
@@ -240,6 +321,13 @@ public class Program {
         buf.append("\n");
         buf.append("命宫" + Data.get神煞(this.命宫天干, this.命宫地支));
         buf.append("\n");
+        buf.append(is太极贵人() ? "太极贵人" : "");
+        buf.append("\n");
+        buf.append(is天德贵人() ? "天德贵人" : "");
+        buf.append("\n");
+        buf.append(is月德贵人() ? "月德贵人" : "");
+        buf.append("\n");
+        buf.append(is三奇贵人() > 0 ? "三奇贵人" : "");
         buf.append("\n");
         buf.append(this.天干[0] %2 == 0 ? "阳年" : "阴年");
         buf.append("\n");
@@ -268,6 +356,7 @@ public class Program {
     public static void main(String[] args) {
         String 日期 = "2020/06/01 12:00:00";
         日期 = "1998/06/09 04:00:00";
+        日期 = "1977/07/08 11:00:00";
         int 性别 = 1; // 男
         Program proc = new Program(日期, 性别);
         System.out.println(proc);
