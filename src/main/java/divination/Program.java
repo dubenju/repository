@@ -356,7 +356,6 @@ public class Program {
     public static void main(String[] args) {
         String 日期 = "2020/06/01 12:00:00";
         日期 = "1998/06/09 04:00:00";
-        日期 = "1977/07/08 11:00:00";
         int 性别 = 1; // 男
         Program proc = new Program(日期, 性别);
         System.out.println(proc);
