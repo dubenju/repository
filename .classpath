@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/resources">
+	<classpathentry including="**|**/**/**" kind="src" output="target/test-classes" path="src/test/resources">
 		<attributes>
 			<attribute name="test" value="true"/>
 		</attributes>
@@ -22,5 +22,39 @@
 	<classpathentry kind="lib" path="lib/junit-jupiter-api-5.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/aws-java-sdk-xray-1.11.797.jar"/>
 	<classpathentry kind="lib" path="lib/aws-xray-recorder-sdk-core-2.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/bcprov-jdk15on-1.65.01.jar"/>
+	<classpathentry kind="lib" path="lib/bcmail-jdk15to18-165.jar"/>
+	<classpathentry kind="lib" path="lib/bcprov-ext-jdk15to18-165.jar"/>
+	<classpathentry kind="lib" path="lib/bcprov-jdk15to18-165.jar"/>
+	<classpathentry kind="lib" path="lib/bcpg-jdk15to18-165.jar"/>
+	<classpathentry kind="lib" path="lib/bcpkix-jdk15to18-165.jar"/>
+	<classpathentry kind="lib" path="lib/bctls-jdk15to18-165.jar"/>
+	<classpathentry kind="lib" path="lib/itextpdf-5.5.13.1.jar"/>
+	<classpathentry kind="lib" path="lib/docx4j-6.1.2.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j-2.1.3.jar"/>
+	<classpathentry kind="lib" path="lib/freemarker-2.3.30.jar"/>
+	<classpathentry kind="lib" path="lib/debugger-app-2.0.20.jar"/>
+	<classpathentry kind="lib" path="lib/fontbox-2.0.20.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox-2.0.20.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox-app-2.0.20.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox-debugger-2.0.20.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox-tools-2.0.20.jar"/>
+	<classpathentry kind="lib" path="lib/preflight-2.0.20.jar"/>
+	<classpathentry kind="lib" path="lib/preflight-app-2.0.20.jar"/>
+	<classpathentry kind="lib" path="lib/xmpbox-2.0.20.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.7.jar"/>
+	<classpathentry kind="lib" path="lib/google-collections-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/fontbox-2.0.16.jar"/>
+	<classpathentry kind="lib" path="lib/batik-all-1.13.jar"/>
+	<classpathentry kind="lib" path="lib/serializer-2.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/xalan-2.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.12.0.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-1.4.01.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-ext-1.3.04.jar"/>
+	<classpathentry kind="lib" path="lib/xmlgraphics-commons-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/fop-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/docx4j-export-fo-8.1.7.jar"/>
+	<classpathentry kind="lib" path="lib/flying-saucer-pdf-9.1.20.jar"/>
+	<classpathentry kind="lib" path="lib/itext-4.2.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
