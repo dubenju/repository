@@ -1,4 +1,4 @@
-#Windows10的OpenSSH服务
+#Windows10的OpenSSH服务  
 &emsp;&emsp;密码多了容易忘记，前几天装了个Oracle11g，20几天没用，管理员的密码记不起来了。费了半天的劲才找了回来。于是乎突发灵感：如果有那天的操作日志就好了。cmd.exe是没戏了，没有这个功能。  
 &emsp;&emsp;在Windows操作系统上执行的Tera Term是可以自动保存日志的。它支持的通信协议有SSH、telnet、串行通信（serial）。  
 [下载地址1](https://zh.osdn.net/projects/ttssh2/downloads/72009/teraterm-4.105.zip/)：  
@@ -11,11 +11,11 @@ https://zh.osdn.net/projects/ttssh2/downloads/72009/teraterm-4.105.zip/
 链接：https://pan.baidu.com/s/1Hpj1l3IbJlnusXtbbwxl5Q  
 提取码：t4hp  
 
-###◆日志的设定：
+###◆日志的设定：  
 设置Setup菜单>additional settings子菜单，就会弹出下面的窗口。  
 ![additional settings子菜单](https://github.com/dubenju/repository/blob/master/pic/OpenSSH_001.jpg)
 
-###◆选择Log选项卡
+###◆选择Log选项卡  
 ![Log选项卡](https://github.com/dubenju/repository/blob/master/pic/OpenSSH_002.jpg)
  
 显示Log的编辑器：C:\Windows\notepad.exe  
@@ -47,27 +47,27 @@ https://zh.osdn.net/projects/ttssh2/downloads/72009/teraterm-4.105.zip/
 %% 百分比符号  
 默认的保存目录：C:\teralog  
 
-###◆最后，Setup>Save setup…保存。
+###◆最后，Setup>Save setup…保存。  
 ![保存](https://github.com/dubenju/repository/blob/master/pic/OpenSSH_003.jpg)
 
-###◆编辑宏文件localhost.ttl
+###◆编辑宏文件localhost.ttl  
 connect 'localhost:22 /ssh /auth=password /user=youruser /passwd=userpassword'
 
-###◆把宏文件追加到快捷菜单中：
+###◆把宏文件追加到快捷菜单中：  
 ![追加到快捷菜单](https://github.com/dubenju/repository/blob/master/pic/OpenSSH_004.jpg)  
 
-###设置对话框
+###设置对话框  
 ![设置对话框](https://github.com/dubenju/repository/blob/master/pic/OpenSSH_005.jpg)  
 指定刚才编辑的宏文件C:\Program Files (x86)\teraterm\localhost.ttl  
 
 客户端算是设置完了，服务器呢？  
 
-###◆安装openssh
+###◆安装openssh  
 设置>应用>应用和功能>管理可选功能>添加功能  
 安装OpenSSH服务器和客户端，提示需要重启完成安装，重启电脑。  
 ![安装openssh](https://github.com/dubenju/repository/blob/master/pic/OpenSSH_0065.jpg)
 
-###◆验证安装
+###◆验证安装  
 在cmd界面输入ssh，验证客户端  
 
 ssh  
@@ -79,7 +79,7 @@ usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] [-b bind_address] [-c cipher_spec]
            [-S ctl_path] [-W host:port] [-w local_tun[:remote_tun]]  
            destination [command]  
 
-###◆SSH服务
+###◆SSH服务  
 同样是命令行界面  
 
 启动SSH服务net start sshd  
@@ -91,7 +91,7 @@ OpenSSH SSH Server 服务已经启动成功。
 net stop sshd  
 OpenSSH SSH Server 服务已成功停止。  
 
-###◆远程SSH
+###◆远程SSH  
 如果是本机请先开启SSH服务，大概如下：  
 命令ssh username@127.0.0.1即ssh 用户名@用户ip  
 
@@ -100,11 +100,11 @@ username@用户ippassword:
 Microsoft Windows [版本]  
 (c) 2019 Microsoft Corporation。保留所有权利。  
 
-###◆我们的怎么执行呢？
+###◆我们的怎么执行呢？  
 Ctrl+Alt+M>localhost就OK了。  
 美中不足：有的图形界面程序比如画板通过teraterm就启动不了了。  
 
-###◆后记
+###◆后记  
 本来是想安装telnet服务来着，可是win10环境下Telnet服务端已经没了。可以依靠第三方telnet服务来继续维持。  
 http://www.goodtechsys.com/zip/TelnetdSetup.exe  
 这个软件只能免费使用 30 天，要么买正版长期使用要么到此为止。  
