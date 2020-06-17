@@ -1,4 +1,4 @@
-#Windows10的OpenSSH服务  
+#Windows10的OpenSSH服务===
 &emsp;&emsp;密码多了容易忘记，前几天装了个Oracle11g，20几天没用，管理员的密码记不起来了。费了半天的劲才找了回来。于是乎突发灵感：如果有那天的操作日志就好了。cmd.exe是没戏了，没有这个功能。  
 &emsp;&emsp;在Windows操作系统上执行的Tera Term是可以自动保存日志的。它支持的通信协议有SSH、telnet、串行通信（serial）。  
 [下载地址1](https://zh.osdn.net/projects/ttssh2/downloads/72009/teraterm-4.105.zip/)：  
@@ -65,7 +65,7 @@ connect 'localhost:22 /ssh /auth=password /user=youruser /passwd=userpassword'
 ###◆安装openssh  
 设置>应用>应用和功能>管理可选功能>添加功能  
 安装OpenSSH服务器和客户端，提示需要重启完成安装，重启电脑。  
-![安装openssh](https://github.com/dubenju/repository/blob/master/pic/OpenSSH_0065.jpg)
+![安装openssh](https://github.com/dubenju/repository/blob/master/pic/OpenSSH_006.jpg)
 
 ###◆验证安装  
 在cmd界面输入ssh，验证客户端  
