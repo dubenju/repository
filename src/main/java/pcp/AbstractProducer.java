@@ -1,6 +1,6 @@
 package pcp;
 
-public class AbstractProducer implements Producer, Runnable {
+public abstract class AbstractProducer implements Producer, Runnable {
     @Override
     public void run() {
       while (true) {

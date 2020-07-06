@@ -1,0 +1,360 @@
+spring配置redis的单元测试（spring-test,junit）
+使用的包：
+
+<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>3.1.2.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>1.7.11.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+
+
+redis数据库参数：
+
+###Redis缓存配置
+#缓存池最小空闲数
+redis.minIdle=5
+#缓存池最大空闲数
+redis.maxIdle=100
+#缓存池最大连接数
+redis.maxTotal=300
+#最大等待时间
+redis.maxWaitMillis=3000
+#使用连接时是否测试可用
+redis.testOnBorrow=true
+#主机地址
+redis.host=127.0.0.1
+#主机端口
+redis.port=6379
+#主机密码
+redis.password=123456
+#数据库下标
+redis.database=4
+
+redis.xml的配置，这里只有redis简单的配置，关于spring另外配置，
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd 
+						http://www.springframework.org/schema/cache 
+						http://www.springframework.org/schema/cache/spring-cache-3.2.xsd">
+						
+    <!-- redis pool相关配置 -->
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<!-- 最小空闲数 -->
+		<property name="minIdle" value="${redis.minIdle}" />
+		<!-- 最大空闲数 -->
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<!-- 最大连接数 -->
+		<property name="maxTotal" value="${redis.maxTotal}" />
+		<!-- 最大等待时间 单位毫秒（ms） -->
+		<property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
+		<!-- 使用连接时测试连接是否可用 -->
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+	
+	<!-- jedis客户端连接工厂 -->
+	<bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="poolConfig" ref="poolConfig" />
+		<property name="database" value="${redis.database}" />
+		<property name="port" value="${redis.port}" />
+		<property name="hostName" value="${redis.host}" />
+		<property name="password" value="${redis.password}" />
+	</bean>
+	
+	<!-- redisTemplate模板 -->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="jedisConnectionFactory" />
+	</bean>
+    
+</beans>
+redis的实现代码，使用了redisTemplate,这里基本代码学习的一个网友的
+package org.gyy.entity.user;
+ 
+import java.io.Serializable;
+ 
+ 
+public class User implements Serializable{
+ 
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5528480600517508340L;
+	private String id;
+	private String name;
+	private String password;
+	
+	public User() {
+		super();
+	}
+	public User(String id, String name, String password) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.password = password;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", password=" + password + "]";
+	}
+	
+	
+	
+}
+package org.gyy.redis;
+ 
+import javax.annotation.Resource;
+ 
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
+ 
+public abstract class AbstractBaseRedisDao<K,V> {
+	@Resource
+	protected RedisTemplate<K, V> redisTemplate;
+/**
+ * 得到RedisSerializer
+ * @return
+ */
+	public RedisSerializer<String> getRedisSerializer() {
+		return redisTemplate.getStringSerializer();
+	}
+/**
+ * 设置redis
+ * @param redisTemplate
+ */
+	public void setRedisTemplate(RedisTemplate<K, V> redisTemplate) {
+		this.redisTemplate = redisTemplate;
+	}
+	
+	
+}
+package org.gyy.redis.dao;
+ 
+import java.util.List;
+ 
+import org.gyy.entity.user.User;
+import org.gyy.redis.AbstractBaseRedisDao;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+@Component
+public class UserDao extends AbstractBaseRedisDao<String, User> implements IUserDao {
+ 
+	@Override
+	public boolean add(User user) {
+		// TODO Auto-generated method stub
+		boolean result = redisTemplate.execute(new RedisCallback<Boolean>() {
+ 
+			@Override
+			public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+				// TODO Auto-generated method stub
+				RedisSerializer<String> serializer = getRedisSerializer();
+				byte[] key = serializer.serialize(user.getId());
+				byte[] name = serializer.serialize(user.getName());
+				return connection.setNX(key, name);
+			}
+		});
+		return result;
+	}
+ 
+	@Override
+	public boolean add(List<User> list) {
+		// TODO Auto-generated method stub
+		Assert.notEmpty(list);
+		boolean result = redisTemplate.execute(new RedisCallback<Boolean>() {
+ 
+			@Override
+			public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+				// TODO Auto-generated method stub
+				RedisSerializer<String> serializer = getRedisSerializer();
+				for (User user : list) {
+					byte[] key = serializer.serialize(user.getId());
+					byte[] name = serializer.serialize(user.getName());
+					connection.setNX(key, name);
+				}
+				return true;
+			}
+		},false,true);
+		return result;
+	}
+ 
+	@Override
+	public void delete(String key) {
+		// TODO Auto-generated method stub
+		redisTemplate.delete(key);
+	}
+ 
+	@Override
+	public void delete(List<String> keys) {
+		// TODO Auto-generated method stub
+		redisTemplate.delete(keys);
+	}
+ 
+	@Override
+	public boolean update(User user) {
+		// TODO Auto-generated method stub
+		String keyId = user.getId();
+		if (get(keyId) == null) {
+			throw new NullPointerException("数据行不存在：key="+keyId);
+		}
+		boolean result = redisTemplate.execute(new RedisCallback<Boolean>() {
+ 
+			@Override
+			public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+				// TODO Auto-generated method stub
+				RedisSerializer<String> serializer = getRedisSerializer();
+				byte[] keyId = serializer.serialize(user.getId());
+				byte[] name = serializer.serialize(user.getName());
+				connection.set(keyId, name);
+				return true;
+			}
+		});
+		return result;
+	}
+ 
+	@Override
+	public User get(String keyId) {
+		// TODO Auto-generated method stub
+		User result = redisTemplate.execute(new RedisCallback<User>() {
+ 
+			@Override
+			public User doInRedis(RedisConnection connection) throws DataAccessException {
+				// TODO Auto-generated method stub
+				RedisSerializer<String> serializer = getRedisSerializer();
+				byte[] key = serializer.serialize(keyId);
+				byte[] value = connection.get(key);
+				if (null == value) {
+					return null;
+				}
+				String name = serializer.deserialize(value);
+				
+				return new User(keyId,name,null);
+			}
+		});
+		return result;
+	}
+ 
+}
+后面的测试部分使用的是spring-test和junit4做的单元测试，以前没有注意，突然觉得spring-test很安逸
+package org.gyy.baseTest;
+ 
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+ 
+@RunWith(SpringJUnit4ClassRunner.class)//使用junit4进行测试 
+@ContextConfiguration({"classpath*:applicationContext.xml"}) //加载配置文件  
+//------------如果加入以下代码，所有继承该类的测试类都会遵循该配置，也可以不加，在测试类的方法上///控制事务，参见下一个实例  
+//这个非常关键，如果不加入这个注解配置，事务控制就会完全失效！  
+//@Transactional  
+//这里的事务关联到配置文件中的事务控制器（transactionManager = "transactionManager"），同时//指定自动回滚（defaultRollback = true）。这样做操作的数据才不会污染数据库！  
+//@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)  
+//------------  
+public class BaseJunit4Test {
+ 
+}
+
+package org.gyy.redis;
+ 
+import java.util.ArrayList;
+import java.util.List;
+ 
+import javax.annotation.Resource;
+ 
+import org.gyy.baseTest.BaseJunit4Test;
+import org.gyy.entity.user.User;
+import org.gyy.redis.dao.IUserDao;
+import org.junit.Test;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+ 
+import junit.framework.Assert;
+ 
+public class RedisTest extends BaseJunit4Test{
+	@Resource
+	private IUserDao userDao;
+	
+	
+	@Test//标明是测试方法 
+	@Transactional //标明此方法需使用事务  
+	@Rollback(true)//标明使用完此方法后事务不回滚,true时为回滚 
+	public void addUser(){
+		User user = new User("12345","张三",null);
+		boolean result = userDao.add(user);
+		Assert.assertTrue("插入失败",result);
+		System.out.println("你好");
+	}
+	
+	@Test
+	public void testGetUser(){
+		String key = "12";
+		User user = userDao.get(key);
+		Assert.assertNotNull(user);
+		Assert.assertEquals(user.getName(), "李四");
+		System.out.println(user);
+		
+	}
+	
+	@Test
+	public void testAddUserList(){
+		List list = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			User user = new User();
+			user.setId("1"+i);
+			user.setName("张三"+i);
+			list.add(user);
+		}
+		
+		long begin = System.currentTimeMillis();
+		boolean result = userDao.add(list);
+		System.out.println(System.currentTimeMillis()-begin);
+		Assert.assertTrue(result);
+	}
+	
+	@Test
+	public void testUpdata(){
+		User user = new User("12", "李四", null);
+		boolean update = userDao.update(user);
+		System.out.println(update);
+	}
+}
+
